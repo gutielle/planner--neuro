@@ -1,4 +1,4 @@
-# Landing Pages — [NOME DA MARCA]
+# Landing Pages — [Planner Neuro]
 
 Colecao de landing pages estaticas em HTML, CSS e JS, pronta para deploy na Vercel sem etapa de build.
 
