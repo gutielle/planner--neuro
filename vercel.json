@@ -6,26 +6,10 @@
     { "source": "/", "destination": "/oferta01-star-story-solution.html" },
     { "source": "/sss", "destination": "/oferta01-star-story-solution.html" },
     { "source": "/sss/", "destination": "/oferta01-star-story-solution.html" },
-    { "source": "/star-story-solution", "destination": "/oferta01-star-story-solution.html" },
-    { "source": "/star-story-solution/", "destination": "/oferta01-star-story-solution.html" },
-    { "source": "/star-story-solution-v1", "destination": "/oferta01-star-story-solution.html" },
-    { "source": "/star-story-solution-v1/", "destination": "/oferta01-star-story-solution.html" },
     { "source": "/bab", "destination": "/oferta01-before-after-bridge-v2.html" },
     { "source": "/bab/", "destination": "/oferta01-before-after-bridge-v2.html" },
-    { "source": "/before-after-bridge", "destination": "/oferta01-before-after-bridge-v2.html" },
-    { "source": "/before-after-bridge/", "destination": "/oferta01-before-after-bridge-v2.html" },
-    { "source": "/before-after-bridge-v2", "destination": "/oferta01-before-after-bridge-v2.html" },
-    { "source": "/before-after-bridge-v2/", "destination": "/oferta01-before-after-bridge-v2.html" },
     { "source": "/pas", "destination": "/oferta01-pas.html" },
-    { "source": "/pas/", "destination": "/oferta01-pas.html" },
-    { "source": "/problem-agitation-solution", "destination": "/oferta01-pas.html" },
-    { "source": "/problem-agitation-solution/", "destination": "/oferta01-pas.html" },
-    { "source": "/neuro-planner/star-story-solution", "destination": "/oferta01-star-story-solution.html" },
-    { "source": "/neuro-planner/star-story-solution/", "destination": "/oferta01-star-story-solution.html" },
-    { "source": "/neuro-planner/before-after-bridge", "destination": "/oferta01-before-after-bridge-v2.html" },
-    { "source": "/neuro-planner/before-after-bridge/", "destination": "/oferta01-before-after-bridge-v2.html" },
-    { "source": "/neuro-planner/pas", "destination": "/oferta01-pas.html" },
-    { "source": "/neuro-planner/pas/", "destination": "/oferta01-pas.html" }
+    { "source": "/pas/", "destination": "/oferta01-pas.html" }
   ],
   "redirects": [
     { "source": "/index", "destination": "/", "permanent": true }
