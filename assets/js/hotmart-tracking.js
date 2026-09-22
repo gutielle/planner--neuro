@@ -11,7 +11,7 @@
     var incoming = new URLSearchParams(locationSearch || window.location.search || "");
     var result = {};
     incoming.forEach(function (value, key) {
-      var k = key.toLowerCase();
+      var k = String(key).toLowerCase();
       if (ALLOWED_KEYS.has(k) || k.indexOf("utm_") === 0) {
         result[k] = value;
       }
@@ -47,18 +47,22 @@
 
     Object.keys(params).forEach(function (key) {
       if (!url.searchParams.has(key)) {
-        url.searchParams.set(key, params[key]);
+        try { url.searchParams.set(key, params[key]); } catch (_) {}
       }
     });
 
     if (!url.searchParams.has("sck")) {
       var sck = buildSck(params);
-      if (sck.length) url.searchParams.set("sck", sck);
+      if (sck.length) {
+        try { url.searchParams.set("sck", sck); } catch (_) {}
+      }
     }
 
     if (!url.searchParams.has("src")) {
       var src = buildSrc(params, url.searchParams.get("sck"));
-      if (src.length) url.searchParams.set("src", src);
+      if (src.length) {
+        try { url.searchParams.set("src", src); } catch (_) {}
+      }
     }
 
     return url.toString();
@@ -69,8 +73,14 @@
       var params = getAllowedParams();
       var sck = buildSck(params);
       var src = buildSrc(params, sck);
-      if (sck.length) { try { localStorage.setItem("hotmart_sck", sck); } catch (_) {} }
-      if (src.length) { try { localStorage.setItem("hotmart_src", src); } catch (_) {} }
+      if (sck.length) {
+        try { localStorage.setItem("hotmart_sck", sck); } catch (_) {}
+        try { sessionStorage.setItem("hotmart_sck", sck); } catch (_) {}
+      }
+      if (src.length) {
+        try { localStorage.setItem("hotmart_src", src); } catch (_) {}
+        try { sessionStorage.setItem("hotmart_src", src); } catch (_) {}
+      }
       if (typeof window.hot === "function") {
         try {
           if (sck.length) window.hot("sck", sck);
@@ -80,37 +90,59 @@
     } catch (_) {}
   }
 
-  function attachCtaListeners() {
-    var as = document.querySelectorAll('a.cta[href*="pay.hotmart.com"]');
+  function fireTrackingEvents() {
+    try {
+      if (typeof window.fbq === "function") {
+        window.fbq("track", "InitiateCheckout", { value: 47, currency: "BRL" });
+      }
+    } catch (_) {}
+    try {
+      if (typeof window.hot === "function") {
+        window.hot("event", "InitiateCheckout", { value: 47, currency: "BRL" });
+      }
+    } catch (_) {}
+  }
+
+  function transformAllHotmartCtas() {
+    var as = document.querySelectorAll('a.cta[href*="pay.hotmart.com"], a.cta[href*="hotmart.com/checkout"]');
+    var changedCount = 0;
     for (var i = 0; i < as.length; i++) {
       var a = as[i];
       if (a.getAttribute("data-hotmart-tracked") === "1") continue;
       a.setAttribute("data-hotmart-tracked", "1");
       a.setAttribute("target", "_blank");
-      a.setAttribute("rel", (a.getAttribute("rel") || "") + " noopener noreferrer").trim();
-      a.addEventListener("click", function (e) {
-        var base = this.getAttribute("href") || HOTMART_BASE;
-        var tracked = getHotmartLinkWithTracking(base);
-        try {
-          if (typeof window.fbq === "function") {
-            window.fbq("track", "InitiateCheckout", { value: 47, currency: "BRL" });
-          }
-        } catch (_) {}
-        try {
-          if (typeof window.hot === "function") window.hot("event", "InitiateCheckout", { value: 47, currency: "BRL" });
-        } catch (_) {}
-        this.setAttribute("href", tracked);
-      });
+      var rel = (a.getAttribute("rel") || "").replace(/noopener|noreferrer/g, "").trim() + " noopener noreferrer";
+      a.setAttribute("rel", rel.trim());
+      var base = a.getAttribute("href") || HOTMART_BASE;
+      var tracked = getHotmartLinkWithTracking(base);
+      a.setAttribute("href", tracked);
+      a.addEventListener("click", function () { fireTrackingEvents(); });
+      changedCount++;
     }
+    return { changed: changedCount, total: as.length };
+  }
+
+  function boot() {
+    persistTracking();
+    var r = transformAllHotmartCtas();
+    window.__plannerNeuroTrackingStatus = {
+      params: getAllowedParams(),
+      finalSampleUrl: getHotmartLinkWithTracking(HOTMART_BASE),
+      ctasModified: r.changed,
+      ctasTotal: r.total
+    };
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", function () { persistTracking(); attachCtaListeners(); });
+    document.addEventListener("DOMContentLoaded", boot);
   } else {
-    persistTracking(); attachCtaListeners();
+    boot();
   }
 
   window.PlannerNeuroTracking = {
-    getHotmartLinkWithTracking: getHotmartLinkWithTracking
+    getHotmartLinkWithTracking: getHotmartLinkWithTracking,
+    transformAllHotmartCtas: transformAllHotmartCtas,
+    getAllowedParams: getAllowedParams,
+    fireTrackingEvents: fireTrackingEvents
   };
 })();
