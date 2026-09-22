@@ -9,10 +9,6 @@
     { "source": "/bab", "destination": "/oferta02.html" },
     { "source": "/bab/", "destination": "/oferta02.html" },
     { "source": "/pas", "destination": "/oferta03.html" },
-    { "source": "/pas/", "destination": "/oferta03.html" },
-    { "source": "/oferta01-sem-cta-hero", "destination": "/oferta01-test-noherocta.html" },
-    { "source": "/oferta01-sem-cta-hero/", "destination": "/oferta01-test-noherocta.html" },
-    { "source": "/test-no-hero-cta", "destination": "/oferta01-test-noherocta.html" },
-    { "source": "/test-no-hero-cta/", "destination": "/oferta01-test-noherocta.html" }
+    { "source": "/pas/", "destination": "/oferta03.html" }
   ]
 }
