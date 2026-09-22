@@ -1,18 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "cleanUrls": true,
+  "cleanUrls": false,
   "trailingSlash": false,
-  "redirects": [
-    { "source": "/index", "destination": "/", "permanent": true },
-    { "source": "/oferta01-star-story-solution", "destination": "/sss", "permanent": true },
-    { "source": "/oferta01-star-story-solution.html", "destination": "/sss", "permanent": true },
-    { "source": "/oferta01-before-after-bridge-v2", "destination": "/bab", "permanent": true },
-    { "source": "/oferta01-before-after-bridge-v2.html", "destination": "/bab", "permanent": true },
-    { "source": "/oferta01-before-after-bridge", "destination": "/bab", "permanent": true },
-    { "source": "/oferta01-before-after-bridge.html", "destination": "/bab", "permanent": true },
-    { "source": "/oferta01-pas", "destination": "/pas", "permanent": true },
-    { "source": "/oferta01-pas.html", "destination": "/pas", "permanent": true }
-  ],
   "rewrites": [
     { "source": "/", "destination": "/oferta01-star-story-solution.html" },
     { "source": "/sss", "destination": "/oferta01-star-story-solution.html" },
