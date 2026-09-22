@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "cleanUrls": false,
+  "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
     { "source": "/", "destination": "/oferta01.html" },
@@ -9,12 +9,6 @@
     { "source": "/bab", "destination": "/oferta02.html" },
     { "source": "/bab/", "destination": "/oferta02.html" },
     { "source": "/pas", "destination": "/oferta03.html" },
-    { "source": "/pas/", "destination": "/oferta03.html" },
-    { "source": "/oferta01", "destination": "/oferta01.html" },
-    { "source": "/oferta01/", "destination": "/oferta01.html" },
-    { "source": "/oferta02", "destination": "/oferta02.html" },
-    { "source": "/oferta02/", "destination": "/oferta02.html" },
-    { "source": "/oferta03", "destination": "/oferta03.html" },
-    { "source": "/oferta03/", "destination": "/oferta03.html" }
+    { "source": "/pas/", "destination": "/oferta03.html" }
   ]
 }
