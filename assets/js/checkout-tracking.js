@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var HOTMART_BASE = "https://pay.hotmart.com/N107723281D";
+  var CHECKOUT_BASE = "https://pay.kirvano.com/fbc0e348-f821-4962-bfac-222caab581e3";
   var ALLOWED_KEYS = new Set([
     "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "utm_id",
     "gclid", "fbclid", "wbraid", "gbraid", "msclkid", "src", "sck"
@@ -37,8 +37,8 @@
     return sck || params.utm_source || params.sck || "";
   }
 
-  function getHotmartLinkWithTracking(hotmartUrl, locationSearch) {
-    var base = hotmartUrl || HOTMART_BASE;
+  function getCheckoutLinkWithTracking(checkoutUrl, locationSearch) {
+    var base = checkoutUrl || CHECKOUT_BASE;
     var url;
     try { url = new URL(base); }
     catch (e) { return base; }
@@ -74,12 +74,14 @@
       var sck = buildSck(params);
       var src = buildSrc(params, sck);
       if (sck.length) {
+        try { localStorage.setItem("checkout_sck", sck); } catch (_) {}
+        try { sessionStorage.setItem("checkout_sck", sck); } catch (_) {}
         try { localStorage.setItem("hotmart_sck", sck); } catch (_) {}
-        try { sessionStorage.setItem("hotmart_sck", sck); } catch (_) {}
       }
       if (src.length) {
+        try { localStorage.setItem("checkout_src", src); } catch (_) {}
+        try { sessionStorage.setItem("checkout_src", src); } catch (_) {}
         try { localStorage.setItem("hotmart_src", src); } catch (_) {}
-        try { sessionStorage.setItem("hotmart_src", src); } catch (_) {}
       }
       if (typeof window.hot === "function") {
         try {
@@ -103,33 +105,48 @@
     } catch (_) {}
   }
 
-  function transformAllHotmartCtas() {
-    var as = document.querySelectorAll('a.cta[href*="pay.hotmart.com"], a.cta[href*="hotmart.com/checkout"]');
+  function isCheckoutLink(href) {
+    if (!href) return false;
+    var h = String(href).toLowerCase();
+    return (
+      h.indexOf("pay.hotmart.com") !== -1 ||
+      h.indexOf("pay.kirvano.com") !== -1 ||
+      h.indexOf("kirvano.com/checkout") !== -1 ||
+      h.indexOf("checkout") !== -1 && h.indexOf("planner") !== -1
+    );
+  }
+
+  function transformAllCtas() {
+    var as = document.querySelectorAll("a.cta");
     var changedCount = 0;
+    var matchedCount = 0;
     for (var i = 0; i < as.length; i++) {
       var a = as[i];
-      if (a.getAttribute("data-hotmart-tracked") === "1") continue;
-      a.setAttribute("data-hotmart-tracked", "1");
+      var href = a.getAttribute("href") || "";
+      if (!isCheckoutLink(href)) continue;
+      matchedCount++;
+      if (a.getAttribute("data-checkout-tracked") === "1") continue;
+      a.setAttribute("data-checkout-tracked", "1");
       a.setAttribute("target", "_blank");
       var rel = (a.getAttribute("rel") || "").replace(/noopener|noreferrer/g, "").trim() + " noopener noreferrer";
       a.setAttribute("rel", rel.trim());
-      var base = a.getAttribute("href") || HOTMART_BASE;
-      var tracked = getHotmartLinkWithTracking(base);
+      var tracked = getCheckoutLinkWithTracking(href);
       a.setAttribute("href", tracked);
       a.addEventListener("click", function () { fireTrackingEvents(); });
       changedCount++;
     }
-    return { changed: changedCount, total: as.length };
+    return { changed: changedCount, totalMatched: matchedCount, totalCtas: as.length };
   }
 
   function boot() {
     persistTracking();
-    var r = transformAllHotmartCtas();
-    window.__plannerNeuroTrackingStatus = {
+    var r = transformAllCtas();
+    window.__plannerCheckoutStatus = {
       params: getAllowedParams(),
-      finalSampleUrl: getHotmartLinkWithTracking(HOTMART_BASE),
+      finalSampleUrl: getCheckoutLinkWithTracking(CHECKOUT_BASE),
       ctasModified: r.changed,
-      ctasTotal: r.total
+      ctasMatchedCheckout: r.totalMatched,
+      ctasTotalOnPage: r.totalCtas
     };
   }
 
@@ -139,10 +156,11 @@
     boot();
   }
 
-  window.PlannerNeuroTracking = {
-    getHotmartLinkWithTracking: getHotmartLinkWithTracking,
-    transformAllHotmartCtas: transformAllHotmartCtas,
+  window.PlannerCheckoutTracking = {
+    getCheckoutLinkWithTracking: getCheckoutLinkWithTracking,
     getAllowedParams: getAllowedParams,
-    fireTrackingEvents: fireTrackingEvents
+    fireTrackingEvents: fireTrackingEvents,
+    transformAllCtas: transformAllCtas,
+    BASE_URL: CHECKOUT_BASE
   };
 })();
