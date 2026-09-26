@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var CHECKOUT_BASE = "https://pay.kirvano.com/fbc0e348-f821-4962-bfac-222caab581e3";
+  var CHECKOUT_BASE = "https://pay.hotmart.com/N107723281D?checkoutMode=10";
   var ALLOWED_KEYS = new Set([
     "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "utm_id",
     "gclid", "fbclid", "wbraid", "gbraid", "msclkid", "src", "sck"
